@@ -6905,6 +6905,11 @@ var $author$project$Main$render = F2(
 					$elm$core$String$fromInt(scoreR)))
 			]);
 	});
+var $elm$core$Basics$composeR = F3(
+	function (f, g, x) {
+		return g(
+			f(x));
+	});
 var $elm$core$Basics$modBy = _Basics_modBy;
 var $author$project$Main$handleGoal = function (pong) {
 	var totalScore = pong.scoreL + pong.scoreR;
@@ -6918,7 +6923,11 @@ var $author$project$Main$handleGoal = function (pong) {
 			scoreR: pong.scoreR + 1
 		}) : (offscreenLeft ? _Utils_update(
 		$author$project$Main$initialState,
-		{scoreL: pong.scoreL + 1, scoreR: pong.scoreR}) : pong);
+		{
+			ballDx: (!A2($elm$core$Basics$modBy, 2, totalScore)) ? (-1) : 1,
+			scoreL: pong.scoreL + 1,
+			scoreR: pong.scoreR
+		}) : pong);
 };
 var $elm$core$Basics$abs = function (n) {
 	return (n < 0) ? (-n) : n;
@@ -7013,13 +7022,13 @@ var $author$project$Main$updatePlayers = F2(
 				rightY: A3($elm$core$Basics$clamp, clampLower, clampUpper, newRightY)
 			});
 	});
-var $author$project$Main$update = F2(
-	function (_v0, pong) {
-		var keyboard = _v0.keyboard;
-		return $author$project$Main$handleGoal(
-			$author$project$Main$updateBall(
-				A2($author$project$Main$updatePlayers, keyboard, pong)));
-	});
+var $author$project$Main$update = function (_v0) {
+	var keyboard = _v0.keyboard;
+	return A2(
+		$elm$core$Basics$composeR,
+		$author$project$Main$updatePlayers(keyboard),
+		A2($elm$core$Basics$composeR, $author$project$Main$updateBall, $author$project$Main$handleGoal));
+};
 var $author$project$Main$main = A3($evancz$elm_playground$Playground$game, $author$project$Main$render, $author$project$Main$update, $author$project$Main$initialState);
 _Platform_export({'Main':{'init':$author$project$Main$main(
 	$elm$json$Json$Decode$succeed(_Utils_Tuple0))(0)}});}(this));

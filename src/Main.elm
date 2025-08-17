@@ -1,8 +1,8 @@
 module Main exposing (main)
-import Playground exposing (.. )
+
+import Playground exposing (game, rectangle, rgb, move, moveX, moveY, words, white)
 import Basics exposing (abs, modBy)
 import String exposing (fromInt)
-import Random
 import Set
 
 gameWidth = 600
@@ -15,29 +15,32 @@ rightPaddleX = gameWidth / 2 - paddleWidth / 2
 initialBallSpeed = 1
 
 
-initialState : {
-  scoreL : Int,
-  scoreR : Int,
-  ballX : Float,
-  ballY : Float,
-  leftY : Float,
-  rightY : Float,
-  ballDx : Float,
-  ballDy : Float,
-  ballSpeed : Float
+type alias Model =
+  { scoreL : Int
+  , scoreR : Int
+  , ballX : Float
+  , ballY : Float
+  , leftY : Float
+  , rightY : Float
+  , ballDx : Float
+  , ballDy : Float
+  , ballSpeed : Float
   }
 
-initialState = {
-  scoreL = 0,
-  scoreR = 0,
-  ballX = 0,
-  ballY = 0,
-  leftY = 0,
-  rightY = 0,
-  ballDx = initialBallSpeed,
-  ballDy = initialBallSpeed,
-  ballSpeed = initialBallSpeed
+initialState : Model
+
+initialState =
+  { scoreL = 0
+  , scoreR = 0
+  , ballX = 0
+  , ballY = 0
+  , leftY = 0
+  , rightY = 0
+  , ballDx = initialBallSpeed
+  , ballDy = initialBallSpeed
+  , ballSpeed = initialBallSpeed
   }
+
 
 main =
   game render update (initialState)
@@ -120,10 +123,13 @@ handleGoal pong =
         scoreL = pong.scoreL,
         ballDx = if modBy 2 totalScore == 0 then -1 else 1
     }
-  else if  offscreenLeft then
-  {
-    initialState | scoreL = pong.scoreL + 1, scoreR = pong.scoreR
-  }
+  else if offscreenLeft then
+    {
+      initialState |
+        scoreL = pong.scoreL + 1,
+        scoreR = pong.scoreR,
+        ballDx = if modBy 2 totalScore == 0 then -1 else 1
+    }
   else pong
 
 updateBall pong =
@@ -143,7 +149,13 @@ updateBall pong =
   }
 
 
-update { keyboard } pong =
-  updatePlayers keyboard pong
-  |> updateBall
-  |> handleGoal
+-- update { keyboard } pong =
+--   updatePlayers keyboard pong
+--   |> updateBall
+--   |> handleGoal
+
+
+update { keyboard } =
+  updatePlayers keyboard
+    >> updateBall
+    >> handleGoal
