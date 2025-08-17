@@ -113,7 +113,7 @@ getPaddleCollisionDx pong =
 handleGoal pong =
   let
     offscreenRight = pong.ballX - ballSize / 2 > gameWidth / 2
-    offscreenLeft = pong.ballX - ballSize / 2 < -gameWidth / 2
+    offscreenLeft = pong.ballX + ballSize / 2 < -gameWidth / 2
     totalScore = pong.scoreL + pong.scoreR
   in
   if offscreenRight then
