@@ -1,7 +1,7 @@
 module Main exposing (main)
 
 import Basics exposing (abs, modBy)
-import Playground exposing (game, move, moveX, moveY, rectangle, rgb, white, words)
+import Playground exposing (game, move, moveX, moveY, rectangle, black, white, blue, words)
 import Set
 import String exposing (fromInt)
 
@@ -49,19 +49,20 @@ main =
 
 render { screen } { ballX, ballY, leftY, rightY, scoreL, scoreR } =
   [ -- blackout
-    rectangle (rgb 0 0 0) screen.width screen.height
+    rectangle black screen.width screen.height
   -- game area
-  , rectangle (rgb 100 100 100) gameWidth gameHeight
+  , rectangle blue gameWidth gameHeight
   -- left paddle
-  , rectangle (rgb 255 255 255) paddleWidth paddleHeight
-      |> moveX leftPaddleX
-      |> moveY leftY
+  , rectangle white paddleWidth paddleHeight
+      |> move leftPaddleX leftY
+      -- |> moveX leftPaddleX
+      -- |> moveY leftY
   -- right paddle
-  , rectangle (rgb 255 255 255) paddleWidth paddleHeight
+  , rectangle white paddleWidth paddleHeight
       |> moveX rightPaddleX
       |> moveY rightY
   -- ball
-  , rectangle (rgb 255 255 255) ballSize ballSize
+  , rectangle white ballSize ballSize
       |> move ballX ballY
   , words white (fromInt scoreL)
       |> move -30 ((gameHeight / 2) + 20)
@@ -134,8 +135,8 @@ handleGoal pong =
   in
   if offscreenRight then
     { initialState
-      | scoreR = pong.scoreR + 1
-      , scoreL = pong.scoreL
+      | scoreR = pong.scoreR
+      , scoreL = pong.scoreL + 1
       , ballDx =
           if modBy 2 totalScore == 0 then
             -1
@@ -144,8 +145,8 @@ handleGoal pong =
     }
   else if offscreenLeft then
     { initialState
-      | scoreL = pong.scoreL + 1
-      , scoreR = pong.scoreR
+      | scoreL = pong.scoreL
+      , scoreR = pong.scoreR + 1
       , ballDx =
           if modBy 2 totalScore == 0 then
             -1
